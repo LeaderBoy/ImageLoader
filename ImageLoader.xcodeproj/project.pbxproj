@@ -8,12 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		525CFF1323CDC4DA00B90092 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF1223CDC4DA00B90092 /* AppDelegate.swift */; };
-		525CFF1523CDC4DA00B90092 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF1423CDC4DA00B90092 /* SceneDelegate.swift */; };
 		525CFF1723CDC4DA00B90092 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF1623CDC4DA00B90092 /* ViewController.swift */; };
 		525CFF1A23CDC4DA00B90092 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525CFF1823CDC4DA00B90092 /* Main.storyboard */; };
 		525CFF1C23CDC4DC00B90092 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 525CFF1B23CDC4DC00B90092 /* Assets.xcassets */; };
 		525CFF1F23CDC4DC00B90092 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525CFF1D23CDC4DC00B90092 /* LaunchScreen.storyboard */; };
 		525CFF2A23CDC4DC00B90092 /* ImageLoaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF2923CDC4DC00B90092 /* ImageLoaderUITests.swift */; };
+		525CFF3A23CDC52000B90092 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF3523CDC52000B90092 /* ImageViewController.swift */; };
+		525CFF3B23CDC52000B90092 /* ImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 525CFF3623CDC52000B90092 /* ImageViewController.xib */; };
+		525CFF3C23CDC52000B90092 /* ImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 525CFF3823CDC52000B90092 /* ImageCell.xib */; };
+		525CFF3D23CDC52000B90092 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF3923CDC52000B90092 /* ImageCell.swift */; };
+		525CFF4523CDC57900B90092 /* ImageMemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF3F23CDC57900B90092 /* ImageMemoryCache.swift */; };
+		525CFF4623CDC57900B90092 /* String + MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4123CDC57900B90092 /* String + MD5.swift */; };
+		525CFF4723CDC57900B90092 /* URLImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4223CDC57900B90092 /* URLImageView.swift */; };
+		525CFF4823CDC57900B90092 /* ImageDiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4323CDC57900B90092 /* ImageDiskCache.swift */; };
+		525CFF4923CDC57900B90092 /* ImageResize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4423CDC57900B90092 /* ImageResize.swift */; };
+		525CFF4D23CDC66B00B90092 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4C23CDC66B00B90092 /* ImageDownloader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +38,6 @@
 /* Begin PBXFileReference section */
 		525CFF0F23CDC4DA00B90092 /* ImageLoader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageLoader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		525CFF1223CDC4DA00B90092 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		525CFF1423CDC4DA00B90092 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		525CFF1623CDC4DA00B90092 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		525CFF1923CDC4DA00B90092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		525CFF1B23CDC4DC00B90092 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -38,6 +46,16 @@
 		525CFF2523CDC4DC00B90092 /* ImageLoaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageLoaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		525CFF2923CDC4DC00B90092 /* ImageLoaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoaderUITests.swift; sourceTree = "<group>"; };
 		525CFF2B23CDC4DC00B90092 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		525CFF3523CDC52000B90092 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		525CFF3623CDC52000B90092 /* ImageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageViewController.xib; sourceTree = "<group>"; };
+		525CFF3823CDC52000B90092 /* ImageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageCell.xib; sourceTree = "<group>"; };
+		525CFF3923CDC52000B90092 /* ImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		525CFF3F23CDC57900B90092 /* ImageMemoryCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImageMemoryCache.swift; path = ../ImageMemoryCache.swift; sourceTree = "<group>"; };
+		525CFF4123CDC57900B90092 /* String + MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String + MD5.swift"; sourceTree = "<group>"; };
+		525CFF4223CDC57900B90092 /* URLImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLImageView.swift; sourceTree = "<group>"; };
+		525CFF4323CDC57900B90092 /* ImageDiskCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImageDiskCache.swift; path = ../ImageDiskCache.swift; sourceTree = "<group>"; };
+		525CFF4423CDC57900B90092 /* ImageResize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageResize.swift; sourceTree = "<group>"; };
+		525CFF4C23CDC66B00B90092 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,8 +98,9 @@
 			isa = PBXGroup;
 			children = (
 				525CFF1223CDC4DA00B90092 /* AppDelegate.swift */,
-				525CFF1423CDC4DA00B90092 /* SceneDelegate.swift */,
 				525CFF1623CDC4DA00B90092 /* ViewController.swift */,
+				525CFF3E23CDC57900B90092 /* URLImageView */,
+				525CFF3423CDC52000B90092 /* Image */,
 				525CFF1823CDC4DA00B90092 /* Main.storyboard */,
 				525CFF1B23CDC4DC00B90092 /* Assets.xcassets */,
 				525CFF1D23CDC4DC00B90092 /* LaunchScreen.storyboard */,
@@ -97,6 +116,62 @@
 				525CFF2B23CDC4DC00B90092 /* Info.plist */,
 			);
 			path = ImageLoaderUITests;
+			sourceTree = "<group>";
+		};
+		525CFF3423CDC52000B90092 /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				525CFF3523CDC52000B90092 /* ImageViewController.swift */,
+				525CFF3623CDC52000B90092 /* ImageViewController.xib */,
+				525CFF3723CDC52000B90092 /* View */,
+			);
+			path = Image;
+			sourceTree = "<group>";
+		};
+		525CFF3723CDC52000B90092 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				525CFF3823CDC52000B90092 /* ImageCell.xib */,
+				525CFF3923CDC52000B90092 /* ImageCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		525CFF3E23CDC57900B90092 /* URLImageView */ = {
+			isa = PBXGroup;
+			children = (
+				525CFF4B23CDC61600B90092 /* Download */,
+				525CFF4A23CDC5B600B90092 /* Cache */,
+				525CFF4023CDC57900B90092 /* Extension */,
+				525CFF4223CDC57900B90092 /* URLImageView.swift */,
+				525CFF4423CDC57900B90092 /* ImageResize.swift */,
+			);
+			path = URLImageView;
+			sourceTree = "<group>";
+		};
+		525CFF4023CDC57900B90092 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				525CFF4123CDC57900B90092 /* String + MD5.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		525CFF4A23CDC5B600B90092 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				525CFF4323CDC57900B90092 /* ImageDiskCache.swift */,
+				525CFF3F23CDC57900B90092 /* ImageMemoryCache.swift */,
+			);
+			path = Cache;
+			sourceTree = "<group>";
+		};
+		525CFF4B23CDC61600B90092 /* Download */ = {
+			isa = PBXGroup;
+			children = (
+				525CFF4C23CDC66B00B90092 /* ImageDownloader.swift */,
+			);
+			path = Download;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,6 +257,8 @@
 			files = (
 				525CFF1F23CDC4DC00B90092 /* LaunchScreen.storyboard in Resources */,
 				525CFF1C23CDC4DC00B90092 /* Assets.xcassets in Resources */,
+				525CFF3B23CDC52000B90092 /* ImageViewController.xib in Resources */,
+				525CFF3C23CDC52000B90092 /* ImageCell.xib in Resources */,
 				525CFF1A23CDC4DA00B90092 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -200,9 +277,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				525CFF4723CDC57900B90092 /* URLImageView.swift in Sources */,
+				525CFF4823CDC57900B90092 /* ImageDiskCache.swift in Sources */,
 				525CFF1723CDC4DA00B90092 /* ViewController.swift in Sources */,
+				525CFF4923CDC57900B90092 /* ImageResize.swift in Sources */,
+				525CFF3D23CDC52000B90092 /* ImageCell.swift in Sources */,
+				525CFF4523CDC57900B90092 /* ImageMemoryCache.swift in Sources */,
+				525CFF4D23CDC66B00B90092 /* ImageDownloader.swift in Sources */,
+				525CFF4623CDC57900B90092 /* String + MD5.swift in Sources */,
+				525CFF3A23CDC52000B90092 /* ImageViewController.swift in Sources */,
 				525CFF1323CDC4DA00B90092 /* AppDelegate.swift in Sources */,
-				525CFF1523CDC4DA00B90092 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
