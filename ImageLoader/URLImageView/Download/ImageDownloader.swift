@@ -37,38 +37,76 @@ public protocol Downloader {
     func cancel()
 }
 
+
+public struct ImageDownloadTask {
+    let task : URLSessionDataTask
+    let url : URL
+}
+
 public class ImageDownloader : NSObject {
     
-    typealias TaskCompletionHandler = (Data?, URLResponse?, Error?) -> Void
+    static let shared = ImageDownloader()
     
-    let downloadQueue = OperationQueue()
+    typealias DownloadCompletionHandler = (Result<Data,Error>) -> Void
     
-    let downloadTimeout : TimeInterval = 60
-    
-    var tasks : [URL : [TaskCompletionHandler]] = [:]
-    
-    lazy var downloadSession: URLSession = {
-        let session = URLSession(configuration: .default, delegate: self, delegateQueue: .main)
-        return session
+    lazy var downloadQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.name = "image.download.queue"
+        return queue
     }()
         
-    func download(from url : URL,complete : TaskCompletionHandler?) {
+    let downloadTimeout : TimeInterval = 60
+    
+    lazy var serialAccessQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        queue.name = "image.serialAccess.queue"
+        return queue
+    }()
+    
+    var tasks : [URL : [DownloadCompletionHandler]] = [:]
+    
+    lazy var downloadSession: URLSession = {
+        return URLSession(configuration: .default)
+    }()
         
-        if !tasks.keys.contains(url) {
-            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: downloadTimeout)
-            let task = downloadSession.dataTask(with: request)
-            task.resume()
+    func download(from url : URL,complete :@escaping DownloadCompletionHandler) {
+        
+        
+        serialAccessQueue.addOperation {
+            let handlers = self.tasks[url,default:[]]
+            self.tasks[url] = handlers + [complete]
+            self.fetchImages(from: url)
         }
-        
-        if let complete = complete {
-            let handlers = tasks[url,default:[]]
-            tasks[url] = handlers + [complete]
-        }        
+    }
+    
+    func fetchImages(from url : URL) {
+        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: self.downloadTimeout)
+        let task = self.downloadSession.dataTask(with: request) { (data, response, error) in
+            if let data = data,let url = response?.url {
+                self.serialAccessQueue.addOperation {
+                    self.invokeCompleteHandlers(with: url, data: data)
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func invokeCompleteHandlers(with url : URL,data : Data) {
+        let handlers = tasks[url,default:[]]
+        tasks[url] = nil
+        for handler in handlers {
+            handler(.success(data))
+        }
     }
 }
 
-extension ImageDownloader : URLSessionDataDelegate {
-    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        completionHandler(.allow)
-    }
-}
+//extension ImageDownloader : URLSessionDataDelegate {
+//    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+//        completionHandler(.allow)
+//    }
+//
+//    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+//
+//    }
+//}

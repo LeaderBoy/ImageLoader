@@ -21,74 +21,66 @@ class URLImageView: UIImageView {
     var receiveData : Data?
     var increatementallyImageSource : CGImageSource?
     
-    func load(url : URL,animated : Bool,completed:((Bool,Error?) ->Void)? = nil) {
+    typealias ImageloadCompletedHandler = (Result<Bool,Error>) -> Void
+    
+    func load(url : URL,animated : Bool,completed:ImageloadCompletedHandler? = nil) {
         key = url.absoluteString
         self.animated = animated
         image = nil
+        print("调用")
+//        if let image = memoryCache.object(forKey: key as NSString) {
+//            self.image = image
+//            print("memory")
+//            return
+//        }
+//
+//        /// sync
+//        if let image = diskCache.object(forKey: key) {
+//            self.image = image
+//            memoryCache.setObject(image, forKey: key as NSString)
+//            print("disk")
+//            return
+//        }
         
-        if let image = memoryCache.object(forKey: key as NSString) {
-            self.image = image
-            print("memory")
-            return
+        ImageDownloader.shared.download(from: url) { (result) in
+            if self.key == url.absoluteString {
+                switch result {
+                case .success(let data):
+                    self.imageSuccessLoaded(from: data, completed: completed)
+                case .failure(let error):
+                    self.imageFailLoaded(with: error, completed: completed)
+                }
+            }
         }
-
-        /// sync
-        if let image = diskCache.object(forKey: key) {
-            self.image = image
-            memoryCache.setObject(image, forKey: key as NSString)
-            print("disk")
-            return
-        }
+    }
+    
+    func imageSuccessLoaded(from data : Data,completed:ImageloadCompletedHandler? = nil) {
         
         let size = CGSize(width: 375, height: 250)
 
-        /// cancel default cache
-        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60.0)
-                
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if error != nil {
-                print(error!)
-                completed?(false,error!)
-                return
-            }
-            if self.key == url.absoluteString {
-                if let imageData = data {
-                    let image = downsample(imageAt: imageData, to: size, scale: 1)!
-                    DispatchQueue.main.async {
-                        if self.animated {
-                            UIView.transition(with: self, duration: 0.25, options: [.curveEaseIn,.transitionCrossDissolve], animations: {
-                                self.image = image
-                            }, completion: nil)
-                        } else {
-                            self.image = image
-                        }
-                        
-                        self.memoryCache.setObject(image, forKey: self.key as NSString)
-                        self.diskCache.setObject(imageData, forKey: self.key)
-                        
-                        completed?(true,nil)
-                    }
+        if let image = downsample(imageAt: data, to: size, scale: 1) {
+            
+            self.memoryCache.setObject(image, forKey: self.key as NSString)
+            self.diskCache.setObject(data, forKey: self.key)
+            
+            DispatchQueue.main.async {
+                if self.animated {
+                    UIView.transition(with: self, duration: 0.25, options: [.curveEaseIn,.transitionCrossDissolve], animations: {
+                        self.image = image
+                    }, completion: nil)
+                } else {
+                    self.image = image
                 }
-            }else {
-                print("loading failed")
-                completed?(false,nil)
+                completed?(.success(true))
             }
+        } else {
+            print("downsample failed")
         }
-        
-        task.resume()
-        
-//        /// async
-//        diskCache.object(forKey: key) { (image) in
-//            if let image = image {
-//                self.memoryCache.setObject(image, forKey: self.key as NSString)
-//                task.cancel()
-//                DispatchQueue.main.async {
-//                    self.image = image
-//                }
-//            }
-//        }
     }
     
+    func imageFailLoaded(with error : Error,completed:ImageloadCompletedHandler? = nil) {
+        print("加载失败:\(error)")
+    }
     
     
     func load(url : URL,progressly : Bool,completed:((Bool,Error?) ->Void)? = nil) {
