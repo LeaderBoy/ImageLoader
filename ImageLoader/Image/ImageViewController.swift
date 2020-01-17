@@ -39,6 +39,11 @@ extension ImageViewController : UITableViewDataSource {
 
 
 let dataSource = [
+    "http://lessimore.cn/images/658x529.gif",
+    "http://lessimore.cn/images/569x356.gif",
+    "http://lessimore.cn/images/560x291.gif",
+    "http://lessimore.cn/images/535x274.gif",
+    "http://lessimore.cn/images/512x288.gif",
     "http://lessimore.cn/tajikistan-4747639_1920.jpg",
     "http://lessimore.cn/business-792113_1920.jpg",
 //    "https://srv4.imgonline.com.ua/result_img/imgonline-com-ua-compressed-eEWDfrmZoYeMRM5.jpg",

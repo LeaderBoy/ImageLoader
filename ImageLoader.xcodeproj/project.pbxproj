@@ -23,6 +23,8 @@
 		525CFF4823CDC57900B90092 /* ImageDiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4323CDC57900B90092 /* ImageDiskCache.swift */; };
 		525CFF4923CDC57900B90092 /* ImageResize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4423CDC57900B90092 /* ImageResize.swift */; };
 		525CFF4D23CDC66B00B90092 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF4C23CDC66B00B90092 /* ImageDownloader.swift */; };
+		525CFF7523D1488B00B90092 /* UIImage + GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF7423D1488B00B90092 /* UIImage + GIF.swift */; };
+		525CFF7723D1A8E800B90092 /* ImageDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CFF7623D1A8E800B90092 /* ImageDownloadOperation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 		525CFF4323CDC57900B90092 /* ImageDiskCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImageDiskCache.swift; path = ../ImageDiskCache.swift; sourceTree = "<group>"; };
 		525CFF4423CDC57900B90092 /* ImageResize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageResize.swift; sourceTree = "<group>"; };
 		525CFF4C23CDC66B00B90092 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
+		525CFF7423D1488B00B90092 /* UIImage + GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage + GIF.swift"; sourceTree = "<group>"; };
+		525CFF7623D1A8E800B90092 /* ImageDownloadOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadOperation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				525CFF4123CDC57900B90092 /* String + MD5.swift */,
+				525CFF7423D1488B00B90092 /* UIImage + GIF.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				525CFF4C23CDC66B00B90092 /* ImageDownloader.swift */,
+				525CFF7623D1A8E800B90092 /* ImageDownloadOperation.swift */,
 			);
 			path = Download;
 			sourceTree = "<group>";
@@ -285,8 +291,10 @@
 				525CFF4523CDC57900B90092 /* ImageMemoryCache.swift in Sources */,
 				525CFF4D23CDC66B00B90092 /* ImageDownloader.swift in Sources */,
 				525CFF4623CDC57900B90092 /* String + MD5.swift in Sources */,
+				525CFF7523D1488B00B90092 /* UIImage + GIF.swift in Sources */,
 				525CFF3A23CDC52000B90092 /* ImageViewController.swift in Sources */,
 				525CFF1323CDC4DA00B90092 /* AppDelegate.swift in Sources */,
+				525CFF7723D1A8E800B90092 /* ImageDownloadOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

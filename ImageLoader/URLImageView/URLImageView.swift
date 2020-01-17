@@ -57,12 +57,10 @@ class URLImageView: UIImageView {
     func imageSuccessLoaded(from data : Data,completed:ImageloadCompletedHandler? = nil) {
         
         let size = CGSize(width: 375, height: 250)
+        
+        var image : UIImage?
 
-        if let image = downsample(imageAt: data, to: size, scale: 1) {
-            
-            self.memoryCache.setObject(image, forKey: self.key as NSString)
-            self.diskCache.setObject(data, forKey: self.key)
-            
+        let applyImage : ((UIImage?) -> Void) = { image in
             DispatchQueue.main.async {
                 if self.animated {
                     UIView.transition(with: self, duration: 0.25, options: [.curveEaseIn,.transitionCrossDissolve], animations: {
@@ -73,8 +71,22 @@ class URLImageView: UIImageView {
                 }
                 completed?(.success(true))
             }
+        }
+        
+        if data.imageContentType == .gif {
+            image = UIImage.gifImage(with: data)
+            applyImage(image)
         } else {
-            print("downsample failed")
+            if let image = downsample(imageAt: data, to: size, scale: 1) {
+                applyImage(image)
+            } else {
+                print("downsample failed")
+            }
+        }
+        
+        if let image = image {
+            self.memoryCache.setObject(image, forKey: self.key as NSString)
+            self.diskCache.setObject(data, forKey: self.key)
         }
     }
     
@@ -127,5 +139,36 @@ extension URLImageView : URLSessionDataDelegate {
             }
         }
         
+    }
+}
+
+/// https://stackoverflow.com/questions/4147311/finding-image-type-from-nsdata-or-uiimage
+extension Data {
+    enum ImageContentType: String {
+        case jpg, png, gif, tiff, unknown
+
+        var fileExtension: String {
+            return self.rawValue
+        }
+    }
+
+    var imageContentType: ImageContentType {
+
+        var values = [UInt8](repeating: 0, count: 1)
+
+        self.copyBytes(to: &values, count: 1)
+
+        switch (values[0]) {
+        case 0xFF:
+            return .jpg
+        case 0x89:
+            return .png
+        case 0x47:
+           return .gif
+        case 0x49, 0x4D :
+           return .tiff
+        default:
+            return .unknown
+        }
     }
 }

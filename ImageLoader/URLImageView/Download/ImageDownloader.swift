@@ -64,6 +64,8 @@ public class ImageDownloader : NSObject {
         return queue
     }()
     
+    let serialTasksQueue = DispatchQueue(label: "image.serialTasks.queue")
+    
     var tasks : [URL : [DownloadCompletionHandler]] = [:]
     
     lazy var downloadSession: URLSession = {
@@ -71,12 +73,29 @@ public class ImageDownloader : NSObject {
     }()
         
     func download(from url : URL,complete :@escaping DownloadCompletionHandler) {
+        /// prevent repetite request
+        shouledRequest(url: url, complete: complete) { (should) in
+            if should {
+                let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
+                let downloadOperation = ImageDownloadOperation(request: request, session: downloadSession)
+                downloadQueue.addOperation(downloadOperation)
+            }
+        }
         
+//        serialAccessQueue.addOperation(downloadOperation)
         
-        serialAccessQueue.addOperation {
+//        serialAccessQueue.addOperation {
+//            let handlers = self.tasks[url,default:[]]
+//            self.tasks[url] = handlers + [complete]
+//            self.fetchImages(from: url)
+//        }
+    }
+    
+    func shouledRequest(url : URL,complete:@escaping DownloadCompletionHandler,downloadCallback:(Bool) -> Void) {
+        serialTasksQueue.sync {
             let handlers = self.tasks[url,default:[]]
             self.tasks[url] = handlers + [complete]
-            self.fetchImages(from: url)
+            downloadCallback(handlers.isEmpty)
         }
     }
     
