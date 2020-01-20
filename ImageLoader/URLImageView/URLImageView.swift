@@ -10,6 +10,12 @@ import UIKit
 
 let imageDecodeQueue = DispatchQueue(label: "image.decode.queue")
 
+enum ImageSource {
+    case memory
+    case disk
+    case network
+}
+
 class URLImageView: UIImageView {
     
     let memoryCache = ImageMemoryCache.shared
@@ -27,7 +33,6 @@ class URLImageView: UIImageView {
         key = url.absoluteString
         self.animated = animated
         image = nil
-        print("调用")
 //        if let image = memoryCache.object(forKey: key as NSString) {
 //            self.image = image
 //            print("memory")
@@ -35,18 +40,19 @@ class URLImageView: UIImageView {
 //        }
 //
 //        /// sync
-//        if let image = diskCache.object(forKey: key) {
-//            self.image = image
-//            memoryCache.setObject(image, forKey: key as NSString)
+//        if let data = diskCache.dataObject(forKey: key) {
 //            print("disk")
+//            imageSuccessLoaded(from: .disk, data: data, completed: nil)
 //            return
 //        }
-        
-        ImageDownloader.shared.download(from: url) { (result) in
+
+        ImageDownloader.shared.download(from: url, progressHandler: { (progress) in
+            print(progress.fractionCompleted)
+        }) { (result) in
             if self.key == url.absoluteString {
                 switch result {
                 case .success(let data):
-                    self.imageSuccessLoaded(from: data, completed: completed)
+                    self.imageSuccessLoaded(from: .network, data: data, completed: completed)
                 case .failure(let error):
                     self.imageFailLoaded(with: error, completed: completed)
                 }
@@ -54,11 +60,11 @@ class URLImageView: UIImageView {
         }
     }
     
-    func imageSuccessLoaded(from data : Data,completed:ImageloadCompletedHandler? = nil) {
+    func imageSuccessLoaded(from source : ImageSource, data : Data,completed:ImageloadCompletedHandler? = nil) {
         
         let size = CGSize(width: 375, height: 250)
         
-        var image : UIImage?
+        var resultImage : UIImage?
 
         let applyImage : ((UIImage?) -> Void) = { image in
             DispatchQueue.main.async {
@@ -74,19 +80,27 @@ class URLImageView: UIImageView {
         }
         
         if data.imageContentType == .gif {
-            image = UIImage.gifImage(with: data)
-            applyImage(image)
+            resultImage = UIImage.gifImage(with: data)
+            applyImage(resultImage)
         } else {
             if let image = downsample(imageAt: data, to: size, scale: 1) {
+                resultImage = image
                 applyImage(image)
             } else {
                 print("downsample failed")
             }
         }
-        
-        if let image = image {
-            self.memoryCache.setObject(image, forKey: self.key as NSString)
-            self.diskCache.setObject(data, forKey: self.key)
+                
+        if let image = resultImage {
+            switch source {
+            case .disk:
+                self.memoryCache.setObject(image, forKey: self.key as NSString)
+            case .network:
+                self.diskCache.setObject(data, forKey: self.key)
+                self.memoryCache.setObject(image, forKey: self.key as NSString)
+            default:
+                break
+            }
         }
     }
     

@@ -46,11 +46,18 @@ public class ImageDiskCache {
     }
     
     public func object(forKey key: String) -> UIImage? {
+        if let data = dataObject(forKey: key) {
+            return UIImage(data: data)
+        }
+        return nil
+    }
+    
+    public func dataObject(forKey key: String) -> Data? {
         if let fileName = fileURL(for: key) {
             if FileManager.default.fileExists(atPath: fileName.path) {
                 do {
                     let data = try Data(contentsOf: fileName)
-                    return UIImage(data: data)
+                    return data
                 } catch let e {
                     print("file search failed:\(e)")
                     return nil

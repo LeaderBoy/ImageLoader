@@ -70,6 +70,7 @@ class ImageDownloadOperation : Operation {
     var session : URLSession
     var request : URLRequest
     var dataTask : URLSessionDataTask?
+    var imageData : Data = Data()
     
     init(request :URLRequest,session : URLSession) {
         self.request = request

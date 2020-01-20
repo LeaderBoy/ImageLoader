@@ -15,7 +15,6 @@ class ImageCell: UITableViewCell {
     var urlString : String! {
         didSet {
             if let url = URL(string:urlString) {
-                print("调")
                 urlImageView.load(url: url, animated: true)
                 
 //                urlImageView.load(url: url, progressly: true)
