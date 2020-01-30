@@ -73,7 +73,7 @@ public class ImageDownloader : NSObject {
         return queue
     }()
         
-    let serialTasksQueue = DispatchQueue(label: "image.serialTasks.queue")
+    let serialTasksQueue = DispatchQueue(label: "image.serialTasks.queue",attributes: .concurrent)
     
     var tasks : [URL : [DownloadCompletionHandler]] = [:]
     
@@ -94,6 +94,7 @@ public class ImageDownloader : NSObject {
                 task.resume()
                             
                 let downloadTask = downloadTasks[url]
+                
                 if downloadTask == nil {
                     let downloadTask = ImageDownloadTask(url: url, progress: task.progress, data: Data(), task: task,observation: observation)
                     downloadTasks[url] = downloadTask
@@ -104,7 +105,7 @@ public class ImageDownloader : NSObject {
     
     /// prevent request repeatily
     func shouledRequest(url : URL,complete:@escaping DownloadCompletionHandler,downloadCallback:(Bool) -> Void) {
-        serialTasksQueue.sync {
+        serialTasksQueue.sync(flags:.barrier) {
             let handlers = self.tasks[url,default:[]]
             self.tasks[url] = handlers + [complete]
             downloadCallback(handlers.isEmpty)
@@ -119,6 +120,28 @@ public class ImageDownloader : NSObject {
             handler(.success(data))
         }
     }
+    
+    func cancelTask(for url : URL) {
+        serialTasksQueue.sync(flags : .barrier) {
+             print(Thread.current)
+            if let downloadTask = self.downloadTasks[url] {
+                /// if image is downloading
+                /// cancel dataTask
+                if downloadTask.progress.fractionCompleted < 1.0 {
+                    let task = downloadTask.task
+                    task.cancel()
+                }
+                /// cancel complete handler
+                if let _ = self.tasks[url] {
+                    self.tasks.removeValue(forKey: url)
+                }
+                /// remove cached ImageDownloadTask
+                self.downloadTasks.removeValue(forKey: url)
+            }
+        }
+    }
+    
+    
 }
 
 extension ImageDownloader : URLSessionDataDelegate {
@@ -127,7 +150,7 @@ extension ImageDownloader : URLSessionDataDelegate {
     }
 
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        serialTasksQueue.async {
+        serialTasksQueue.sync {
             guard let url = dataTask.response?.url else { return }
             if var downloadTask = self.downloadTasks[url] {
                 downloadTask.data.append(data)
@@ -137,12 +160,16 @@ extension ImageDownloader : URLSessionDataDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        serialTasksQueue.async {
-            guard let url = task.response?.url else { return }
-            if var downloadTask = self.downloadTasks[url] {
-                downloadTask.progress = task.progress
-                self.downloadTasks[url] = downloadTask
-                self.invokeCompleteHandlers(with: url, data: downloadTask.data)
+        if let err = error {
+            print(err)
+        } else {
+            serialTasksQueue.sync {
+                guard let url = task.response?.url else { return }
+                if var downloadTask = self.downloadTasks[url] {
+                    downloadTask.progress = task.progress
+                    self.downloadTasks[url] = downloadTask
+                    self.invokeCompleteHandlers(with: url, data: downloadTask.data)
+                }
             }
         }
     }

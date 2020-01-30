@@ -30,6 +30,12 @@ class URLImageView: UIImageView {
     typealias ImageloadCompletedHandler = (Result<Bool,Error>) -> Void
     
     func load(url : URL,animated : Bool,completed:ImageloadCompletedHandler? = nil) {
+        
+        if !self.key.isEmpty {
+            print("取消\(self.key)")
+            ImageDownloader.shared.cancelTask(for: url)
+        }
+        
         key = url.absoluteString
         self.animated = animated
         image = nil
@@ -45,9 +51,10 @@ class URLImageView: UIImageView {
 //            imageSuccessLoaded(from: .disk, data: data, completed: nil)
 //            return
 //        }
+        
 
         ImageDownloader.shared.download(from: url, progressHandler: { (progress) in
-            print(progress.fractionCompleted)
+            
         }) { (result) in
             if self.key == url.absoluteString {
                 switch result {
@@ -58,6 +65,18 @@ class URLImageView: UIImageView {
                 }
             }
         }
+    }
+    
+    func cancelImageLoad(from key : String) {
+        
+    }
+    
+    func cancelImageLoading(from key : String) {
+        
+    }
+    
+    func cancelImageLoadedCallBack(from key : String) {
+        
     }
     
     func imageSuccessLoaded(from source : ImageSource, data : Data,completed:ImageloadCompletedHandler? = nil) {
@@ -81,6 +100,7 @@ class URLImageView: UIImageView {
         
         if data.imageContentType == .gif {
             resultImage = UIImage.gifImage(with: data)
+//            resultImage = downsample(imageAt: data, to: size, scale: 1)
             applyImage(resultImage)
         } else {
             if let image = downsample(imageAt: data, to: size, scale: 1) {
