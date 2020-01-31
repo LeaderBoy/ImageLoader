@@ -15,5 +15,69 @@
             stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C20BDF07-614F-4B4C-9F01-C88996D7A3D2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ImageLoader/URLImageView/Download/ImageDownloader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "invokeCompleteHandlers(task:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "C20BDF07-614F-4B4C-9F01-C88996D7A3D2 - f6faa8ee565b3e9a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImageLoader.ImageDownloader.invokeCompleteHandlers(task: __C.NSURLSessionTask) -&gt; ()"
+                  moduleName = "ImageLoader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yangzhiyuan/Desktop/Compoents/ImageLoader/ImageLoader/ImageLoader/URLImageView/Download/ImageDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "117"
+                  endingLineNumber = "117"
+                  offsetFromSymbolStart = "722">
+               </Location>
+               <Location
+                  uuid = "C20BDF07-614F-4B4C-9F01-C88996D7A3D2 - ee02ffbdd9e75d99"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in ImageLoader.ImageDownloader.invokeCompleteHandlers(task: __C.NSURLSessionTask) -&gt; ()"
+                  moduleName = "ImageLoader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yangzhiyuan/Desktop/Compoents/ImageLoader/ImageLoader/ImageLoader/URLImageView/Download/ImageDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "118"
+                  endingLineNumber = "118"
+                  offsetFromSymbolStart = "338">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DC0F91D3-A9C2-4993-8439-A43861633F05"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ImageLoader/URLImageView/Download/ImageDownloader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "download(from:progressHandler:complete:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

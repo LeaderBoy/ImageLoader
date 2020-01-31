@@ -39,20 +39,13 @@ extension ImageViewController : UITableViewDataSource {
 
 
 let dataSource = [
-//    "http://lessimore.cn/images/658x529.gif",
+    "http://lessimore.cn/images/658x529.gif",
 
-//    "http://lessimore.cn/images/569x356.gif",
-//    "http://lessimore.cn/images/560x291.gif",
-//    "http://lessimore.cn/images/535x274.gif",
-//    "http://lessimore.cn/images/512x288.gif",
+    "http://lessimore.cn/images/569x356.gif",
+    "http://lessimore.cn/images/560x291.gif",
+    "http://lessimore.cn/images/535x274.gif",
+    "http://lessimore.cn/images/512x288.gif",
     "http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
-//"http://lessimore.cn/tajikistan-4747639_1920.jpg",
     "http://lessimore.cn/business-792113_1920.jpg",
 ////    "https://srv4.imgonline.com.ua/result_img/imgonline-com-ua-compressed-eEWDfrmZoYeMRM5.jpg",
 //    
@@ -60,10 +53,10 @@ let dataSource = [
 //    "http://lessimore.cn/image_progressive2.jpg",
 //
 //    "https://eoimages.gsfc.nasa.gov/images/imagerecords/78000/78314/VIIRS_3Feb2012_lrg.jpg",
-    "https://cdn.pixabay.com/photo/2019/12/18/14/04/christmas-4704083_1280.jpg",
-    "https://cdn.pixabay.com/photo/2020/01/01/18/31/coffee-4734151_1280.jpg",
-    "https://cdn.pixabay.com/photo/2019/12/02/16/37/snow-4668099_1280.jpg",
-    "https://cdn.pixabay.com/photo/2020/01/04/16/51/sunset-4741140__480.jpg",
+//    "https://cdn.pixabay.com/photo/2019/12/18/14/04/christmas-4704083_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2020/01/01/18/31/coffee-4734151_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2019/12/02/16/37/snow-4668099_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2020/01/04/16/51/sunset-4741140__480.jpg",
 //    "https://cdn.pixabay.com/photo/2019/12/08/01/08/winter-4680354__480.jpg",
 //    "https://cdn.pixabay.com/photo/2019/12/29/15/45/paragliding-4727377__480.jpg",
 //    "https://cdn.pixabay.com/photo/2020/01/05/14/02/fallow-deer-4743241__480.jpg",

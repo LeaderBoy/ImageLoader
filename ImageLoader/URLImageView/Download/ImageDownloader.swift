@@ -38,17 +38,16 @@ public protocol Downloader {
 }
 
 
-//public struct ImageDownloadTask {
-//    let task : URLSessionDataTask
-//    let url : URL
-//}
-
 struct ImageDownloadTask {
+    
+    typealias TaskCompleteHandler = (Result<Data,Error>) -> Void
+    
     let url : URL
     var progress : Progress
     var data : Data
-    let task : URLSessionDataTask
+    let task : URLSessionTask
     var observation: NSKeyValueObservation?
+    var handlers : [TaskCompleteHandler]
 }
 
 public class ImageDownloader : NSObject {
@@ -73,10 +72,8 @@ public class ImageDownloader : NSObject {
         return queue
     }()
         
-    let serialTasksQueue = DispatchQueue(label: "image.serialTasks.queue",attributes: .concurrent)
-    
-    var tasks : [URL : [DownloadCompletionHandler]] = [:]
-    
+    let barrierTasksQueue = DispatchQueue(label: "image.barrierTasks.queue",attributes: .concurrent)
+        
     var downloadTasks : [URL : ImageDownloadTask] = [:]
     
     lazy var downloadSession: URLSession = {
@@ -87,43 +84,57 @@ public class ImageDownloader : NSObject {
         shouledRequest(url: url, complete: complete) { (should) in
             if should {
                 let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
-                let task = downloadSession.dataTask(with: request)
+                let task = self.downloadSession.dataTask(with: request)
                 let observation = task.progress.observe(\.fractionCompleted) { progress, _ in
                     progressHandler?(progress)
                 }
                 task.resume()
-                            
-                let downloadTask = downloadTasks[url]
                 
-                if downloadTask == nil {
-                    let downloadTask = ImageDownloadTask(url: url, progress: task.progress, data: Data(), task: task,observation: observation)
-                    downloadTasks[url] = downloadTask
-                }
+                let downloadTask = ImageDownloadTask(url: url, progress: task.progress, data: Data(), task: task,observation: observation, handlers: [complete])
+                self.downloadTasks[url] = downloadTask
             }
         }
     }
     
     /// prevent request repeatily
-    func shouledRequest(url : URL,complete:@escaping DownloadCompletionHandler,downloadCallback:(Bool) -> Void) {
-        serialTasksQueue.sync(flags:.barrier) {
-            let handlers = self.tasks[url,default:[]]
-            self.tasks[url] = handlers + [complete]
-            downloadCallback(handlers.isEmpty)
+    func shouledRequest(url : URL,complete:@escaping DownloadCompletionHandler,downloadCallback:@escaping (Bool) -> Void) {
+        barrierTasksQueue.sync(flags:.barrier) {
+            if var downloadTask = self.downloadTasks[url] {
+                let handlers = downloadTask.handlers
+                downloadTask.handlers = handlers + [complete]
+                self.downloadTasks[url] = downloadTask
+                downloadCallback(handlers.isEmpty)
+            } else {
+                downloadCallback(true)
+            }
         }
     }
     
-    func invokeCompleteHandlers(with url : URL,data : Data) {
-        let handlers = tasks[url,default:[]]
-        tasks.removeValue(forKey: url)
-        downloadTasks.removeValue(forKey: url)
-        for handler in handlers {
-            handler(.success(data))
+    func invokeCompleteHandlers(task : URLSessionTask) {
+        
+        guard let url = task.response?.url else { return }
+        
+        barrierTasksQueue.sync(flags : .barrier) {
+            if let downloadTask = self.downloadTasks[url] {
+                let handlers = downloadTask.handlers
+                self.downloadTasks.removeValue(forKey: url)
+                if let error = task.error {
+                    for handler in handlers {
+                        handler(.failure(error))
+                    }
+                } else {
+                    for handler in handlers {
+                        handler(.success(downloadTask.data))
+                    }
+                }
+            }
         }
     }
     
     func cancelTask(for url : URL) {
-        serialTasksQueue.sync(flags : .barrier) {
-             print(Thread.current)
+        /// cancel must sync
+        /// to prevent again request has been cancelled
+        barrierTasksQueue.sync(flags : .barrier) {
             if let downloadTask = self.downloadTasks[url] {
                 /// if image is downloading
                 /// cancel dataTask
@@ -131,15 +142,41 @@ public class ImageDownloader : NSObject {
                     let task = downloadTask.task
                     task.cancel()
                 }
-                /// cancel complete handler
-                if let _ = self.tasks[url] {
-                    self.tasks.removeValue(forKey: url)
-                }
                 /// remove cached ImageDownloadTask
                 self.downloadTasks.removeValue(forKey: url)
             }
         }
     }
+    
+    /// https://stackoverflow.com/questions/40662007/nsurlsessiontask-suspend-does-not-work
+    
+    /// suspendTask not work for data task
+    /// - Parameter url: url
+//    func suspendTask(for url : URL) {
+//        barrierTasksQueue.sync(flags : .barrier) {
+//            if let downloadTask = self.downloadTasks[url] {
+//                /// if image is downloading
+//                /// suspend dataTask
+//                let task = downloadTask.task
+//                if task.state == .running  {
+//                    task.suspend()
+//                }
+//            }
+//        }
+//    }
+    
+//    func resumeTask(for url : URL) {
+//        barrierTasksQueue.sync(flags : .barrier) {
+//            if let downloadTask = self.downloadTasks[url] {
+//                /// if image is downloading
+//                /// resume dataTask
+//                let task = downloadTask.task
+//                if task.state == .suspended {
+//                    task.resume()
+//                }
+//            }
+//        }
+//    }
     
     
 }
@@ -150,7 +187,7 @@ extension ImageDownloader : URLSessionDataDelegate {
     }
 
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        serialTasksQueue.sync {
+        barrierTasksQueue.sync {
             guard let url = dataTask.response?.url else { return }
             if var downloadTask = self.downloadTasks[url] {
                 downloadTask.data.append(data)
@@ -160,27 +197,7 @@ extension ImageDownloader : URLSessionDataDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let err = error {
-            print(err)
-        } else {
-            serialTasksQueue.sync {
-                guard let url = task.response?.url else { return }
-                if var downloadTask = self.downloadTasks[url] {
-                    downloadTask.progress = task.progress
-                    self.downloadTasks[url] = downloadTask
-                    self.invokeCompleteHandlers(with: url, data: downloadTask.data)
-                }
-            }
-        }
+        invokeCompleteHandlers(task: task)
     }
     
-//    func operation(with task: URLSessionDataTask) -> ImageDownloadOperation? {
-//        let op = downloadQueue.operations.first { (operation) -> Bool in
-//            if let download = operation as? ImageDownloadOperation {
-//                return download.dataTask?.taskIdentifier == task.taskIdentifier
-//            }
-//            return false
-//        } as? ImageDownloadOperation
-//        return op
-//    }
 }

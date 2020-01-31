@@ -54,7 +54,7 @@ class URLImageView: UIImageView {
         
 
         ImageDownloader.shared.download(from: url, progressHandler: { (progress) in
-            
+            print(progress.fractionCompleted)
         }) { (result) in
             if self.key == url.absoluteString {
                 switch result {
@@ -65,18 +65,6 @@ class URLImageView: UIImageView {
                 }
             }
         }
-    }
-    
-    func cancelImageLoad(from key : String) {
-        
-    }
-    
-    func cancelImageLoading(from key : String) {
-        
-    }
-    
-    func cancelImageLoadedCallBack(from key : String) {
-        
     }
     
     func imageSuccessLoaded(from source : ImageSource, data : Data,completed:ImageloadCompletedHandler? = nil) {
@@ -187,7 +175,9 @@ extension Data {
     }
 
     var imageContentType: ImageContentType {
-
+//        if self.count == 0 {
+//            return .unknown
+//        }
         var values = [UInt8](repeating: 0, count: 1)
 
         self.copyBytes(to: &values, count: 1)
