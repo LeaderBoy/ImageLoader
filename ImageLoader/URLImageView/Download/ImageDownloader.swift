@@ -38,6 +38,9 @@ public protocol Downloader {
 }
 
 
+/// URLSession rather than OperationQueue and Operation
+/// https://stackoverflow.com/questions/21918722/how-do-i-use-nsoperationqueue-with-nsurlsession
+
 struct ImageDownloadTask {
     
     typealias TaskCompleteHandler = (Result<Data,Error>) -> Void
@@ -55,22 +58,8 @@ public class ImageDownloader : NSObject {
     static let shared = ImageDownloader()
     
     typealias DownloadCompletionHandler = (Result<Data,Error>) -> Void
-    
-    lazy var downloadQueue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 6
-        queue.name = "image.download.queue"
-        return queue
-    }()
         
     let downloadTimeout : TimeInterval = 60
-    
-    lazy var serialAccessQueue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        queue.name = "image.serialAccess.queue"
-        return queue
-    }()
         
     let barrierTasksQueue = DispatchQueue(label: "image.barrierTasks.queue",attributes: .concurrent)
         
@@ -92,6 +81,7 @@ public class ImageDownloader : NSObject {
                 
                 let downloadTask = ImageDownloadTask(url: url, progress: task.progress, data: Data(), task: task,observation: observation, handlers: [complete])
                 self.downloadTasks[url] = downloadTask
+                print("个数:\(self.downloadTasks.count)")
             }
         }
     }
@@ -117,6 +107,7 @@ public class ImageDownloader : NSObject {
         barrierTasksQueue.sync(flags : .barrier) {
             if let downloadTask = self.downloadTasks[url] {
                 let handlers = downloadTask.handlers
+                downloadTask.observation?.invalidate()
                 self.downloadTasks.removeValue(forKey: url)
                 if let error = task.error {
                     for handler in handlers {
@@ -138,12 +129,16 @@ public class ImageDownloader : NSObject {
             if let downloadTask = self.downloadTasks[url] {
                 /// if image is downloading
                 /// cancel dataTask
-                if downloadTask.progress.fractionCompleted < 1.0 {
-                    let task = downloadTask.task
+                let task = downloadTask.task
+                if task.state == .running {
+                    print("取消了\(url)")
                     task.cancel()
                 }
                 /// remove cached ImageDownloadTask
+                downloadTask.observation?.invalidate()
                 self.downloadTasks.removeValue(forKey: url)
+            } else {
+                print("未完成取消\(url)")
             }
         }
     }

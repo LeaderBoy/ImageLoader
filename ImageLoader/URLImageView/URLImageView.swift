@@ -31,12 +31,14 @@ class URLImageView: UIImageView {
     
     func load(url : URL,animated : Bool,completed:ImageloadCompletedHandler? = nil) {
         
-        if !self.key.isEmpty {
-            print("取消\(self.key)")
-            ImageDownloader.shared.cancelTask(for: url)
-        }
+//        if !self.key.isEmpty {
+//            print("准备取消\(self.key)")
+//            ImageDownloader.shared.cancelTask(for: url)
+//        }
         
         key = url.absoluteString
+        
+        print("index:\(url)")
         self.animated = animated
         image = nil
 //        if let image = memoryCache.object(forKey: key as NSString) {
@@ -65,6 +67,10 @@ class URLImageView: UIImageView {
                 }
             }
         }
+    }
+    
+    func cancelImageDownload(url : URL) {
+        ImageDownloader.shared.cancelTask(for: url)
     }
     
     func imageSuccessLoaded(from source : ImageSource, data : Data,completed:ImageloadCompletedHandler? = nil) {

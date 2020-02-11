@@ -13,6 +13,8 @@ class ImageViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     let cellID = "ImageCell"
     
+    var heights : [IndexPath : CGFloat] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -20,6 +22,7 @@ class ImageViewController: UIViewController {
         let nib = UINib(nibName: cellID, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: cellID)
         tableView.tableFooterView = UIView()
+        tableView.estimatedRowHeight = ceil(UIScreen.main.bounds.width * 9 / 16)
     }
 
 }
@@ -33,6 +36,19 @@ extension ImageViewController : UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! ImageCell
         cell.urlString = dataSource[indexPath.row]
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let cell = cell as? ImageCell else { return }
+        cell.cancelLoad()
+    }
+
+}
+
+extension ImageViewController : UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let height = cell.frame.height
+        heights[indexPath] = height
     }
 }
 
@@ -48,11 +64,11 @@ let dataSource = [
     "http://lessimore.cn/tajikistan-4747639_1920.jpg",
     "http://lessimore.cn/business-792113_1920.jpg",
 ////    "https://srv4.imgonline.com.ua/result_img/imgonline-com-ua-compressed-eEWDfrmZoYeMRM5.jpg",
-//    
-//    "http://lessimore.cn/image_progressive3.jpg",
-//    "http://lessimore.cn/image_progressive2.jpg",
-//
-//    "https://eoimages.gsfc.nasa.gov/images/imagerecords/78000/78314/VIIRS_3Feb2012_lrg.jpg",
+    
+    "http://lessimore.cn/image_progressive3.jpg",
+    "http://lessimore.cn/image_progressive2.jpg",
+
+    "https://eoimages.gsfc.nasa.gov/images/imagerecords/78000/78314/VIIRS_3Feb2012_lrg.jpg",
 //    "https://cdn.pixabay.com/photo/2019/12/18/14/04/christmas-4704083_1280.jpg",
 //    "https://cdn.pixabay.com/photo/2020/01/01/18/31/coffee-4734151_1280.jpg",
 //    "https://cdn.pixabay.com/photo/2019/12/02/16/37/snow-4668099_1280.jpg",

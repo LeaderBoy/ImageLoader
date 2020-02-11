@@ -24,6 +24,12 @@ class ImageCell: UITableViewCell {
         }
     }
     
+    func cancelLoad() {
+        if let url = URL(string:urlString) {
+            urlImageView.cancelImageDownload(url: url)
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
        

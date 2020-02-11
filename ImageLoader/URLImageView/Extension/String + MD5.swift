@@ -17,7 +17,6 @@ import Foundation
 
 import CommonCrypto
 
-
 extension String {
     var md5Value: String {
         if #available(iOS 13.0, *) {

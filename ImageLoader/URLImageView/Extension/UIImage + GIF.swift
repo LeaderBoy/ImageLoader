@@ -49,14 +49,17 @@ extension UIImage {
         var duration : Double = 0
         var images : [UIImage] = []
         
-        let downSampleOptions = [
-            kCGImageSourceCreateThumbnailFromImageAlways : true,
-            kCGImageSourceShouldCacheImmediately : true,
-            kCGImageSourceCreateThumbnailWithTransform : true,
-        ] as CFDictionary
+//        let size = CGSize(width: 375, height: 200)
+        
+//        let downSampleOptions = [
+//            kCGImageSourceCreateThumbnailFromImageAlways : true,
+//            kCGImageSourceShouldCacheImmediately : true,
+//            kCGImageSourceCreateThumbnailWithTransform : true,
+//            kCGImageSourceThumbnailMaxPixelSize : size
+//        ] as CFDictionary
         
         for index in 0...imageCount {
-            guard let cgimage = CGImageSourceCreateImageAtIndex(imageSource, index, downSampleOptions) else {
+            guard let cgimage = CGImageSourceCreateImageAtIndex(imageSource, index, nil) else {
                 continue
             }
             let image = UIImage(cgImage: cgimage)
